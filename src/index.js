@@ -4,6 +4,7 @@ import useMeasure from "./useMeasure";
 import useMedia from "./useMedia";
 import "./styles.css";
 import InlineEdit from "./components/text-editor.jsx";
+import Image from "./components/image.jsx";
 
 const Unsplash = require("unsplash-js").default;
 const toJson = require("unsplash-js").toJson;
@@ -27,33 +28,47 @@ function App() {
   const [bind, { width }] = useMeasure();
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("ITALY");
-  useEffect(() => {
-    async function fetchData() {
-      await unsplash.search
-        .photos(search, 1, 30)
-        .then(toJson)
-        .then(json => {
-          console.log("USING: ", search);
-          let result = json.results.map((item, i) => {
-            const column = heights.indexOf(Math.min(...heights)); // Basic masonry-grid placing, puts tile into the smallest column using Math.min
 
-            const x = (width / columns) * column;
-            const y = (heights[column] += item.height / 8) - item.height / 8;
-            return {
-              css: `url(${item.urls.raw})`,
-              height: item.height / 8,
-              x,
-              y,
-              width: width / columns
-            };
-          });
-          setItems(result);
-          console.log(items);
+  async function fetchData() {
+    console.log(items.length);
+    await unsplash.search
+      .photos(search, 1, 40)
+      .then(toJson)
+      .then(json => {
+        console.log("USING: ", search);
+        let result = json.results.map((item, i) => {
+          const column = heights.indexOf(Math.min(...heights)); // Basic masonry-grid placing, puts tile into the smallest column using Math.min
+          const x = (width / columns) * column;
+          const y = (heights[column] += item.height / 8) - item.height / 8;
+          return {
+            css: `url(${item.urls.raw})`,
+            height: item.height / 8,
+            x,
+            y,
+            width: width / columns
+          };
         });
-    }
+
+        setItems(result);
+      });
+  }
+  useEffect(() => {
     fetchData();
   }, [search, setItems, width]);
 
+  // TODO: saving this to make infinite scroll later
+  // useEffect(() => {
+  //   var d = document.documentElement;
+  //   var offset = d.scrollTop + window.innerHeight;
+  //   var height = d.offsetHeight;
+
+  //   console.log("offset = " + offset);
+  //   console.log("height = " + height);
+
+  //   if (offset >= height) {
+  //     console.log("At the bottom");
+  //   }
+  // }, [window.onscroll]);
   return (
     <>
       <InlineEdit
@@ -75,19 +90,30 @@ function App() {
           textTransform: "uppercase"
         }}
       />
+
       <div {...bind} className="list" style={{ height: Math.max(...heights) }}>
         {items.map((item, key) => (
-          <div
-            key={key}
+          // <div
+          //   key={key}
+          //   style={{
+          //     transform: `translate3d(${item.x}px,${item.y}px,0)`,
+          //     width: item.width,
+          //     height: item.height,
+          //     opacity: 1
+          //   }}
+          // >
+          //   <div style={{ backgroundImage: item.css }} />
+          // </div>
+          <Image
+            id={key}
             style={{
               transform: `translate3d(${item.x}px,${item.y}px,0)`,
               width: item.width,
               height: item.height,
               opacity: 1
             }}
-          >
-            <div style={{ backgroundImage: item.css }} />
-          </div>
+            css={item.css}
+          />
         ))}
       </div>
     </>
