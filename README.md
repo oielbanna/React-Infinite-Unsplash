@@ -1,4 +1,2 @@
 # React-Infinite-Unsplash
-Created with CodeSandbox
-
-
+The purpose of this project is to experiment with the new React Hooks
