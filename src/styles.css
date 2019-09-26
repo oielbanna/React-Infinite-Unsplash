@@ -23,6 +23,12 @@ body,
   letter-spacing: 22px;
   font-size: 22px;
 }
+#root > div {
+  width: 100%;
+}
+.infinite-scroll-component {
+  height: 100vh !important;
+}
 
 h1 {
   text-transform: uppercase;
