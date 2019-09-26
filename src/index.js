@@ -6,6 +6,7 @@ import "./styles.css";
 import InlineEdit from "./components/text-editor.jsx";
 import Image from "./components/image.js";
 
+
 const Unsplash = require("unsplash-js").default;
 const toJson = require("unsplash-js").toJson;
 
@@ -29,10 +30,12 @@ function App() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("FLORENCE");
 
+
   async function fetchData() {
     console.log(items.length);
     await unsplash.search
       .photos(search, 1, Math.max(items.length + 10, 20))
+
       .then(toJson)
       .then(json => {
         console.log("USING: ", search);
@@ -97,6 +100,17 @@ function App() {
       </p>
       <div {...bind} className="list" style={{ height: Math.max(...heights) }}>
         {items.map((item, key) => (
+          // <div
+          //   key={key}
+          //   style={{
+          //     transform: `translate3d(${item.x}px,${item.y}px,0)`,
+          //     width: item.width,
+          //     height: item.height,
+          //     opacity: 1
+          //   }}
+          // >
+          //   <div style={{ backgroundImage: item.css }} />
+          // </div>
           <Image
             id={key}
             style={{
