@@ -4,7 +4,8 @@ import useMeasure from "./useMeasure";
 import useMedia from "./useMedia";
 import "./styles.css";
 import InlineEdit from "./components/text-editor.jsx";
-import Image from "./components/image.jsx";
+import Image from "./components/image.js";
+
 
 const Unsplash = require("unsplash-js").default;
 const toJson = require("unsplash-js").toJson;
@@ -27,12 +28,14 @@ function App() {
   // Measure the width of the container element
   const [bind, { width }] = useMeasure();
   const [items, setItems] = useState([]);
-  const [search, setSearch] = useState("ITALY");
+  const [search, setSearch] = useState("FLORENCE");
+
 
   async function fetchData() {
     console.log(items.length);
     await unsplash.search
-      .photos(search, 1, 40)
+      .photos(search, 1, Math.max(items.length + 10, 20))
+
       .then(toJson)
       .then(json => {
         console.log("USING: ", search);
@@ -90,7 +93,11 @@ function App() {
           textTransform: "uppercase"
         }}
       />
-
+      <p
+        style={{ letterSpacing: 0, margin: 6, color: "#ababab", fontSize: 14 }}
+      >
+        Click the title to search
+      </p>
       <div {...bind} className="list" style={{ height: Math.max(...heights) }}>
         {items.map((item, key) => (
           // <div
